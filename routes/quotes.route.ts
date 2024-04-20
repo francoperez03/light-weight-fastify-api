@@ -1,22 +1,21 @@
-import { Type } from '@sinclair/typebox'
-import QuoteService from "../services/quotes.service";
-import { Container } from "typedi";
+import { Service, Inject } from "typedi";
+import logger from "../utils/logger";
+import { IQuoteProvider } from "../interfaces/quotes.interface";
 
-const querySchema = Type.Object({
-    amount: Type.Number(),
-    chainIdFrom: Type.Integer(),
-    chainIdTo: Type.Integer(),
-    currencyCode: Type.String({ minLength: 3, maxLength: 3 }) // Ejemplo para códigos ISO de 3 letras.
-  });
+@Service()
+export class QuoteService {
+  constructor(
+    @Inject("QuoteProvider")
+    private quoteProvider: IQuoteProvider
+  ) {}
 
-export default async function routes(server: any) {
-    server.get('/quotes', {
-        schema: {
-            querystring: querySchema
-        },
-        handler: async (request : any, reply: any) => {
-            const { amount, chainIdFrom, chainIdTo, currencyCode } = request.query;
-            reply.send({ amount, chainIdFrom, chainIdTo, currencyCode });
-          }
-    });
+  async getBestQuote(params: { data: string;}) {
+    try {
+      const quotes = this.quoteProvider.getQuote(params)
+      return quotes;
+    } catch (e) {
+      logger.error((e as Error).message);
+      return { delivered: 0, status: "error" };
+    }
+  }
 }

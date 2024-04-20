@@ -1,5 +1,9 @@
-import QuoteProvider from "./quotes.provider";
+import { QuoteProvider } from "./quotes.provider";
+import logger from "../utils/logger";
+import { Container } from "typedi";
+
 
 export default async () => {
-  const quoteProvider = new QuoteProvider();
+  Container.set("QuoteProvider", new QuoteProvider());
+  logger.info("Websocket client connected");
 };

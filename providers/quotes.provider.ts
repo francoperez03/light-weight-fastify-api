@@ -1,21 +1,16 @@
-import { Container, Service } from "typedi";
-import { IQuoteProvider } from "../interfaces/quotes.interface";
-@Service()
-export default class QuoteProvider implements IQuoteProvider {
-  constructor() {
-  }
+import { IQuoteProvider } from '../interfaces/quotes.interface';
+import logger from "../utils/logger";
 
-  getQuote({
-    amount,
-    chainIdFrom,
-    chainIdTo,
-    currencyCode,
-  }: {
-    amount: number,
-    chainIdFrom: number,
-    chainIdTo: number,
-    currencyCode: string,
-  }) {
-   
+export class QuoteProvider implements IQuoteProvider {
+  constructor(){
+  }
+  getQuote({ data }: { data: string; }) {
+    try {
+      return {ok:'ok'};
+    } catch (error) {
+      logger.error('Error fetching quote from Quote', error);
+      throw error;
+    }
   }
 }
+
